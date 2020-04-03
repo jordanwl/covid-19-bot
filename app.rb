@@ -43,7 +43,7 @@ post '/callback' do
 
       message = {
         type: 'text',
-        text: address.split(", ")[-2]
+        text: get_latest_cases(address.state)
       }
 
       client.reply_message(event['replyToken'], message)
