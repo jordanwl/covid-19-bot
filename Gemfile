@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'geocoder'
 gem 'httparty'
 gem 'line-bot-api'
 gem 'sinatra'

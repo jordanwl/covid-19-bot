@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+require 'geocoder'
 require 'httparty'
 require 'line/bot'
 
@@ -41,7 +42,7 @@ post '/callback' do
 
       message1 = {
         type: 'text',
-        text: "#{message['address'].split('').last} #{message['address']}"
+        text: "#{message['address'].split(' ').last} #{message['address']}"
       }
 
       client.reply_message(event['replyToken'], message1)
