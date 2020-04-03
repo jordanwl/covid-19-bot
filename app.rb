@@ -38,11 +38,9 @@ post '/callback' do
         client.reply_message(event['replyToken'], message)
       end
     when Line::Bot::Event::MessageType::Location
-      message = event.message
-
       message = {
         type: 'text',
-        text: [event.message['latitude'].class.to_s, event.message['longitude'].class.to_s]
+        text: [event.message['latitude'], event.message['longitude']]
       }
 
       client.reply_message(event['replyToken'], message)
