@@ -44,12 +44,12 @@ post '/callback' do
     end
   end
 
-  def get_latest_data
-    response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
-
-    response["infectedByRegion"][1]["infectedCount"]
-  end
-
   # Don't forget to return a successful response
   "OK"
+end
+
+def get_latest_data
+  response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
+
+  response["infectedByRegion"][1]["infectedCount"]
 end
