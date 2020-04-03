@@ -39,24 +39,18 @@ post '/callback' do
       end
     when Line::Bot::Event::MessageType::Location
       coordinates = [event.message['latitude'], event.message['longitude']]
-      address = Geocoder.search(coordinates).first.address
-
+      prefecture = Geocoder.search(coordinates).first.state
       message = {
         type: 'text',
-        text: get_latest_cases(address.state)
+        text: get_latest_cases(prefecture)
       }
 
       client.reply_message(event['replyToken'], message)
     end
   end
 
-
   # Don't forget to return a successful response
   "OK"
-end
-
-def get_prefecture_from_location(lat, lon)
-
 end
 
 def get_latest_cases(prefecture)
@@ -64,13 +58,4 @@ def get_latest_cases(prefecture)
 
   pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture.downcase.strip }[0]
   "#{pref_stats["region"]}: #{pref_stats["infectedCount"]}"
-end
-
-def reply_content(event, messages)
-  res = client.reply_message(
-    event['replyToken'],
-    messages
-  )
-
-  res
 end
