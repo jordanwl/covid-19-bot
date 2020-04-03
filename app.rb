@@ -40,7 +40,7 @@ post '/callback' do
     when Line::Bot::Event::MessageType::Location
       message = {
         type: 'text',
-        text: [event.message['latitude'], event.message['longitude']]
+        text: "#{event.message['latitude']}, #{event.message['longitude']}"
       }
 
       client.reply_message(event['replyToken'], message)
