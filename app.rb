@@ -60,3 +60,12 @@ def get_latest_data(prefecture)
   pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture.downcase.strip }[0]
   "#{pref_stats["region"]}: #{pref_stats["infectedCount"]}"
 end
+
+def reply_content(event, messages)
+  res = client.reply_message(
+    event['replyToken'],
+    messages
+  )
+
+  res
+end
