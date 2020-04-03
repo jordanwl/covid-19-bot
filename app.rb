@@ -32,7 +32,7 @@ post '/callback' do
       events.each do |event|
         message = {
           type: 'text',
-          text: get_latest_data(event.message['text'])
+          text: get_latest_cases(event.message['text'])
         }
 
         client.reply_message(event['replyToken'], message)
@@ -40,20 +40,12 @@ post '/callback' do
     when Line::Bot::Event::MessageType::Location
       message = event.message
 
-      message1 = {
+      message = {
         type: 'text',
-        text: "#{message['address'].split(' ').last} #{message['address']}"
+        text: [event.message['latitude'].class.to_s, event.message['longitude'].class.to_s]
       }
 
-      client.reply_message(event['replyToken'], message1)
-
-      reply_content(event, {
-        type: 'location',
-        title: message['title'] || message['address'],
-        address: message['address'],
-        latitude: message['latitude'],
-        longitude: message['longitude']
-      })
+      client.reply_message(event['replyToken'], message)
     end
   end
 
@@ -62,7 +54,11 @@ post '/callback' do
   "OK"
 end
 
-def get_latest_data(prefecture)
+def get_prefecture_from_location(lat, lon)
+
+end
+
+def get_latest_cases(prefecture)
   response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
 
   pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture.downcase.strip }[0]
