@@ -21,28 +21,32 @@ post '/callback' do
     error 400 do 'Bad Request' end
   end
 
-  case event.type
-  when Line::Bot::Event::MessageType::Text
-    events = client.parse_events_from(body)
+  events = client.parse_events_from(body)
 
-    events.each do |event|
-      message = {
-            type: 'text',
-            text: get_latest_data(event.message['text'])
-          }
+  events.each do |event|
+    case event.type
+    when Line::Bot::Event::MessageType::Text
+      events = client.parse_events_from(body)
 
-      client.reply_message(event['replyToken'], message)
+      events.each do |event|
+        message = {
+              type: 'text',
+              text: get_latest_data(event.message['text'])
+            }
+
+        client.reply_message(event['replyToken'], message)
+      end
+    when Line::Bot::Event::MessageType::Location
+      message = event.message
+
+      reply_content(event, {
+        type: 'location',
+        title: message['title'] || message['address'],
+        address: message['address'],
+        latitude: message['latitude'],
+        longitude: message['longitude']
+      })
     end
-  when Line::Bot::Event::MessageType::Location
-    message = event.message
-
-    reply_content(event, {
-      type: 'location',
-      title: message['title'] || message['address'],
-      address: message['address'],
-      latitude: message['latitude'],
-      longitude: message['longitude']
-    })
   end
 
 
