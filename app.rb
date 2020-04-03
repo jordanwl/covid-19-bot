@@ -43,7 +43,7 @@ post '/callback' do
 
       message = {
         type: 'text',
-        text: address.split(", ").last
+        text: address.split(", ")[-2]
       }
 
       client.reply_message(event['replyToken'], message)
