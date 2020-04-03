@@ -30,14 +30,21 @@ post '/callback' do
 
       events.each do |event|
         message = {
-              type: 'text',
-              text: get_latest_data(event.message['text'])
-            }
+          type: 'text',
+          text: get_latest_data(event.message['text'])
+        }
 
         client.reply_message(event['replyToken'], message)
       end
     when Line::Bot::Event::MessageType::Location
       message = event.message
+
+      message1 = {
+        type: 'text',
+        text: "#{message['address'].split('').last} #{message['address']}"
+      }
+
+      client.reply_message(event['replyToken'], message1)
 
       reply_content(event, {
         type: 'location',
