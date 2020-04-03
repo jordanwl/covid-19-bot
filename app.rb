@@ -38,9 +38,12 @@ post '/callback' do
         client.reply_message(event['replyToken'], message)
       end
     when Line::Bot::Event::MessageType::Location
+      coordinates = [event.message['latitude'], event.message['longitude']]
+      address = Geocoder.search(coordinates).first.address
+
       message = {
         type: 'text',
-        text: "#{event.message['latitude']}, #{event.message['longitude']}"
+        text: address.split(", ").last
       }
 
       client.reply_message(event['replyToken'], message)
