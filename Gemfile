@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'
+gem 'httparty'
 gem 'line-bot-api'
+gem 'sinatra'
 
 group :development do
 	gem 'shotgun'

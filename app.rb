@@ -33,7 +33,7 @@ post '/callback' do
       when Line::Bot::Event::MessageType::Text
         message = {
           type: 'text',
-          text: get_latest_data
+          text: "Tokyo: #{get_latest_data}"
         }
         client.reply_message(event['replyToken'], message)
       when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
@@ -47,8 +47,9 @@ post '/callback' do
   def get_latest_data
     response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
 
-    response.body["infectedByRegion"][1]["infectedCount"]
+    response["infectedByRegion"][1]["infectedCount"]
   end
+
   # Don't forget to return a successful response
   "OK"
 end
