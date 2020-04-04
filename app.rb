@@ -38,8 +38,8 @@ post '/callback' do
         message =
           if event.message['text'] === 'help'
             {
-              type: 'text'
-              text: ''
+              type: 'text',
+              text: 'You can either send me a prefecture (e.g. "Tokyo") or location data and I will provide information on the cases in that area.'
             }
           elsif PREF_LIST.include?(event.message['text'])
             {
