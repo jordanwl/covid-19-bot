@@ -33,7 +33,7 @@ post '/callback' do
     # when message is text type
     when Line::Bot::Event::MessageType::Text
       events = client.parse_events_from(body)
-      text_recieved = event.message['text'].strip.downcase
+      text_recieved = event.message['text'].strip.downcase.gsub('ō', 'o')
 
       events.each do |event|
         message =
@@ -61,9 +61,13 @@ post '/callback' do
     when Line::Bot::Event::MessageType::Location
       coordinates = [event.message['latitude'], event.message['longitude']]
       prefecture = Geocoder.search(coordinates).first.state
+
+      # replace special characters and unnecessary words
+      parsed_prefecture = prefecture.downcase.gsub('ō', 'o').split(' ')[0]
+
       message = {
         type: 'text',
-        text: get_latest_cases(prefecture)
+        text: get_latest_cases(parsed_prefecture)
       }
 
       client.reply_message(event['replyToken'], message)
