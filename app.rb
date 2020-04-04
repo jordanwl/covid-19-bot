@@ -40,7 +40,7 @@ post '/callback' do
           if text_recieved === 'help'
             {
               type: 'text',
-              text: 'You can either send me a prefecture (e.g. "Tokyo") or location data and I will provide information on the cases in that area.'
+              text: 'You can either send me a prefecture (e.g. "Tokyo") or location data in Japan and I will provide information on the cases in that area.'
             }
           elsif PREF_LIST.include?(text_recieved)
             {
@@ -82,5 +82,5 @@ def get_latest_cases(prefecture)
   response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
 
   pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture }[0]
-  "#{pref_stats["region"]}: #{pref_stats["infectedCount"]}"
+  "There are currently #{pref_stats["infectedCount"]} cases of COVID-19 in #{pref_stats["region"]}.\nSource: Ministry of Health, Labour and Welfare (https://www.mhlw.go.jp/index.html)"
 end
