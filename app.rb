@@ -33,18 +33,19 @@ post '/callback' do
     # when message is text type
     when Line::Bot::Event::MessageType::Text
       events = client.parse_events_from(body)
+      text_recieved = event.message['text'].strip.downcase
 
       events.each do |event|
         message =
-          if event.message['text'] === 'help'
+          if text_recieved === 'help'
             {
               type: 'text',
               text: 'You can either send me a prefecture (e.g. "Tokyo") or location data and I will provide information on the cases in that area.'
             }
-          elsif PREF_LIST.include?(event.message['text'])
+          elsif PREF_LIST.include?(text_recieved)
             {
               type: 'text',
-              text: get_latest_cases(event.message['text'])
+              text: get_latest_cases(text_recieved)
             }
           else
             {
@@ -76,6 +77,6 @@ end
 def get_latest_cases(prefecture)
   response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
 
-  pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture.downcase.strip }[0]
+  pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture }[0]
   "#{pref_stats["region"]}: #{pref_stats["infectedCount"]}"
 end
