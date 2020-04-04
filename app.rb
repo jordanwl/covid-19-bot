@@ -6,6 +6,9 @@ require 'line/bot'
 
 Bundler.require
 
+# constants
+PREF_LIST = ['hokkaido', 'aomori', 'iwate', 'miyagi', 'akita', 'yamagata', 'fukushima', 'ibaraki', 'tochigi', 'gunma', 'saitama', 'chiba', 'tokyo', 'kanagawa', 'niigata', 'toyama', 'ishikawa', 'fukui', 'yamanashi', 'nagano', 'gifu', 'shizuoka', 'aichi', 'mie', 'shiga', 'kyoto', 'osaka', 'hyōgo', 'nara', 'wakayama', 'tottori', 'shimane', 'okayama', 'hiroshima', 'yamaguchi', 'tokushima', 'kagawa', 'ehime', 'kochi', 'fukuoka', 'saga', 'nagasaki', 'kumamoto', 'oita', 'miyazaki', 'kagoshima', 'okinawa']
+
 def client
   @client ||= Line::Bot::Client.new { |config|
     config.channel_id = ENV["LINE_CHANNEL_ID"]
@@ -26,17 +29,34 @@ post '/callback' do
 
   events.each do |event|
     case event.type
+
+    # when message is text type
     when Line::Bot::Event::MessageType::Text
       events = client.parse_events_from(body)
 
       events.each do |event|
-        message = {
-          type: 'text',
-          text: get_latest_cases(event.message['text'])
-        }
+        message =
+          if event.message['text'] === 'help'
+            {
+              type: 'text'
+              text: ''
+            }
+          elsif PREF_LIST.include?(event.message['text'])
+            {
+              type: 'text',
+              text: get_latest_cases(event.message['text'])
+            }
+          else
+            {
+              type: 'text',
+              text: "I'm sorry, I didn't understand your message. Please try again."
+            }
+          end
 
         client.reply_message(event['replyToken'], message)
       end
+
+    # when message is location type
     when Line::Bot::Event::MessageType::Location
       coordinates = [event.message['latitude'], event.message['longitude']]
       prefecture = Geocoder.search(coordinates).first.state
@@ -49,10 +69,10 @@ post '/callback' do
     end
   end
 
-  # Don't forget to return a successful response
   "OK"
 end
 
+# helper methods
 def get_latest_cases(prefecture)
   response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
 
