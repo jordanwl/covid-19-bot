@@ -71,6 +71,8 @@ post '/callback' do
       }
 
       client.reply_message(event['replyToken'], message)
+
+    # when message is other type
     else
       message = {
               type: 'text',
