@@ -103,8 +103,8 @@ end
 
 # constants
 INFO = <<~HEREDOC
-You can either send me a prefecture (e.g. "Tokyo") or location data
-in Japan and I will provide information on the cases in that area.
+You can either send me a prefecture (e.g. "Tokyo") or location data in Japan and I will provide \
+information on the cases in that area.
 
 -----
 
