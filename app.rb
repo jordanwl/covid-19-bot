@@ -6,9 +6,6 @@ require 'line/bot'
 
 Bundler.require
 
-# constants
-PREF_LIST = ['hokkaido', 'aomori', 'iwate', 'miyagi', 'akita', 'yamagata', 'fukushima', 'ibaraki', 'tochigi', 'gunma', 'saitama', 'chiba', 'tokyo', 'kanagawa', 'niigata', 'toyama', 'ishikawa', 'fukui', 'yamanashi', 'nagano', 'gifu', 'shizuoka', 'aichi', 'mie', 'shiga', 'kyoto', 'osaka', 'hyōgo', 'nara', 'wakayama', 'tottori', 'shimane', 'okayama', 'hiroshima', 'yamaguchi', 'tokushima', 'kagawa', 'ehime', 'kochi', 'fukuoka', 'saga', 'nagasaki', 'kumamoto', 'oita', 'miyazaki', 'kagoshima', 'okinawa']
-
 def client
   @client ||= Line::Bot::Client.new { |config|
     config.channel_id = ENV["LINE_CHANNEL_ID"]
@@ -40,7 +37,7 @@ post '/callback' do
           if text_recieved === 'help'
             {
               type: 'text',
-              text: 'You can either send me a prefecture (e.g. "Tokyo") or location data in Japan and I will provide information on the cases in that area.'
+              text: INFO
             }
           elsif PREF_LIST.include?(text_recieved)
             {
@@ -50,7 +47,7 @@ post '/callback' do
           else
             {
               type: 'text',
-              text: "I'm sorry, I didn't understand your message. Please try again."
+              text: UNKNOWN
             }
           end
 
@@ -76,7 +73,7 @@ post '/callback' do
     else
       message = {
               type: 'text',
-              text: "I'm sorry, I didn't understand your message. Please try again."
+              text: UNKNOWN
       }
 
       client.reply_message(event['replyToken'], message)
@@ -89,7 +86,91 @@ end
 # helper methods
 def get_latest_cases(prefecture)
   response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
-
   pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture }[0]
-  "There are currently #{pref_stats["infectedCount"]} cases of COVID-19 in #{pref_stats["region"]}.\n\nSource: Ministry of Health, Labour and Welfare (https://www.mhlw.go.jp/index.html)"
+
+  <<~HEREDOC
+  There are currently #{pref_stats["infectedCount"]} cases of COVID-19 in #{pref_stats["region"]}.
+
+  Source: Ministry of Health, Labour and Welfare (https://www.mhlw.go.jp/index.html)
+
+  -----
+
+  現時点での新型コロナウイルス感染症患者数#{pref_stats["region"]}、#{pref_stats["infectedCount"]} 名
+
+  情報元: 厚生労働省 (https://www.mhlw.go.jp/index.html)
+  HEREDOC
 end
+
+# constants
+INFO = <<~HEREDOC
+You can either send me a prefecture (e.g. "Tokyo") or location data
+in Japan and I will provide information on the cases in that area.
+
+-----
+
+都道府県（例：東京都）もしくは国内の位置情報のどちらかを送信してください。
+該当地域の症例数など情報をお送りします。
+HEREDOC
+
+UNKNOWN = <<~HEREDOC
+I'm sorry, I didn't understand your message.
+Please try again or text 'help' for more information.
+
+-----
+
+メッセージありがとうございます。
+
+申し訳ございません、入力内容が確認できませんでした。
+再度入力内容をご確認ください。
+さらに詳しい情報が必要な場合はHelpと送信してください。
+HEREDOC
+
+PREF_LIST = [
+  'hokkaido',
+  'aomori',
+  'iwate',
+  'miyagi',
+  'akita',
+  'yamagata',
+  'fukushima',
+  'ibaraki',
+  'tochigi',
+  'gunma',
+  'saitama',
+  'chiba',
+  'tokyo',
+  'kanagawa',
+  'niigata',
+  'toyama',
+  'ishikawa',
+  'fukui',
+  'yamanashi',
+  'nagano',
+  'gifu',
+  'shizuoka',
+  'aichi',
+  'mie',
+  'shiga',
+  'kyoto',
+  'osaka',
+  'hyogo',
+  'nara',
+  'wakayama',
+  'tottori',
+  'shimane',
+  'okayama',
+  'hiroshima',
+  'yamaguchi',
+  'tokushima',
+  'kagawa',
+  'ehime',
+  'kochi',
+  'fukuoka',
+  'saga',
+  'nagasaki',
+  'kumamoto',
+  'oita',
+  'miyazaki',
+  'kagoshima',
+  'okinawa'
+]
