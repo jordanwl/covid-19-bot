@@ -39,7 +39,7 @@ post '/callback' do
               type: 'text',
               text: INFO
             }
-          elsif PREFECTURES.include?(text_recieved)
+          elsif PREFECTURES.key?(text_recieved)
             {
               type: 'text',
               text: get_latest_cases(text_recieved)
