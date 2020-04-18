@@ -95,7 +95,7 @@ def get_latest_cases(prefecture)
 
   -----
 
-  現時点での新型コロナウイルス感染症患者数#{pref_stats["region"]}、#{pref_stats["infectedCount"]} 名
+  現時点での新型コロナウイルス感染症患者数#{PREFECTURES[pref_stats["region"]]}、#{pref_stats["infectedCount"]} 名
 
   情報元: 厚生労働省 (https://www.mhlw.go.jp/index.html)
   HEREDOC
