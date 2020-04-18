@@ -89,7 +89,8 @@ def get_latest_cases(prefecture)
   pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture }[0]
 
   <<~HEREDOC
-  There are currently #{pref_stats["infectedCount"]} cases of COVID-19 in #{pref_stats["region"]}.
+  There are currently #{pref_stats["infectedCount"]} cases of COVID-19 in \
+  #{pref_stats["region"]} prefecture.
 
   Source: Ministry of Health, Labour and Welfare (https://www.mhlw.go.jp/index.html)
 
