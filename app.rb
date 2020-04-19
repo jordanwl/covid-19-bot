@@ -30,7 +30,12 @@ post '/callback' do
     # when message is text type
     when Line::Bot::Event::MessageType::Text
       events = client.parse_events_from(body)
-      text_recieved = event.message['text'].strip.downcase.gsub('ō', 'o')
+      text_recieved =
+        if PREFECTURES.value?(text_recieved.strip)
+          PREFECTURES.key(text_recieved)
+        else
+          event.message['text'].strip.downcase.gsub('ō', 'o')
+        end
 
       events.each do |event|
         message =
@@ -39,7 +44,7 @@ post '/callback' do
               type: 'text',
               text: INFO
             }
-          elsif PREFECTURES.key?(text_recieved.to_sym)
+          elsif PREFECTURES.key?(text_recieved.to_sym) || PREFECTURES.value?(text_recieved)
             {
               type: 'text',
               text: get_latest_cases(text_recieved)
@@ -124,7 +129,7 @@ Please try again or text 'help' for more information.
 
 申し訳ございません、入力内容が確認できませんでした。
 再度入力内容をご確認ください。
-さらに詳しい情報が必要な場合はHelpと送信してください。
+さらに詳しい情報が必要な場合はhelpと送信してください。
 HEREDOC
 
 PREFECTURES = {
