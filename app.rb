@@ -34,7 +34,7 @@ post '/callback' do
         if PREFECTURES.value?(event.message['text'].strip)
           PREFECTURES.key(event.message['text'].strip)
         else
-          event.message['text'].strip.downcase.gsub('ō', 'o')
+          event.message['text'].strip.downcase.gsub('ō', 'o').to_sym
         end
 
       events.each do |event|
@@ -44,7 +44,7 @@ post '/callback' do
               type: 'text',
               text: INFO
             }
-          elsif PREFECTURES.key?(text_recieved.to_sym)
+          elsif PREFECTURES.key?(text_recieved)
             {
               type: 'text',
               text: get_latest_cases(text_recieved)
@@ -91,7 +91,7 @@ end
 # helper methods
 def get_latest_cases(prefecture)
   response = HTTParty.get('https://api.apify.com/v2/key-value-stores/YbboJrL3cgVfkV1am/records/LATEST?disableRedirect=true')
-  pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase === prefecture }[0]
+  pref_stats = response["infectedByRegion"].select {|obj| obj["region"].downcase.to_sym === prefecture }[0]
 
   <<~HEREDOC
   There are currently #{pref_stats["infectedCount"]} cases of COVID-19 in \
