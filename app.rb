@@ -31,8 +31,8 @@ post '/callback' do
     when Line::Bot::Event::MessageType::Text
       events = client.parse_events_from(body)
       text_recieved =
-        if PREFECTURES.value?(text_recieved.strip)
-          PREFECTURES.key(text_recieved)
+        if PREFECTURES.value?(event.message['text'].strip)
+          PREFECTURES.key(event.message['text'].strip)
         else
           event.message['text'].strip.downcase.gsub('ō', 'o')
         end
