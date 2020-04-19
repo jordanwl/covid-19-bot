@@ -44,7 +44,7 @@ post '/callback' do
               type: 'text',
               text: INFO
             }
-          elsif PREFECTURES.key?(text_recieved.to_sym) || PREFECTURES.value?(text_recieved)
+          elsif PREFECTURES.key?(text_recieved.to_sym)
             {
               type: 'text',
               text: get_latest_cases(text_recieved)
