@@ -64,9 +64,9 @@ post '/callback' do
       coordinates = [event.message['latitude'], event.message['longitude']]
       prefecture = Geocoder.search(coordinates).first.state
 
-      puts coordinates
-      puts prefecture
-      puts Geocoder.search(coordinates).first
+      p coordinates
+      p prefecture
+      p Geocoder.search(coordinates).first
       # replace special characters and unnecessary words
       parsed_prefecture = prefecture.downcase.gsub('ō', 'o').split(' ')[0]
 
