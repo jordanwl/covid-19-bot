@@ -62,11 +62,11 @@ post '/callback' do
     # when message is location type
     when Line::Bot::Event::MessageType::Location
       coordinates = [event.message['latitude'], event.message['longitude']]
-      prefecture = Geocoder.search(coordinates).first.state
+      prefecture = Geocoder.search(coordinates).first.address.province
 
-      p coordinates
+      # p coordinates
       p prefecture
-      p Geocoder.search(coordinates).first
+      # p Geocoder.search(coordinates).first
       # replace special characters and unnecessary words
       parsed_prefecture = prefecture.downcase.gsub('ō', 'o').split(' ')[0]
 
