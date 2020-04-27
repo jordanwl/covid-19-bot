@@ -36,7 +36,7 @@ post '/callback' do
 
       events.each do |event|
         message =
-          if parsed_text === 'help'
+          if parsed_text === 'help'.to_sym
             {
               type: 'text',
               text: INFO
