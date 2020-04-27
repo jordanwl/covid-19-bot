@@ -108,7 +108,7 @@ end
 
 def parse_input_text(text)
   # check and remove prefectural suffix (-to, -ken, -fu)
-  parsed_text = text.split("").slice(0, (text.length - 1).join if SUFFIXES.include?(text.last)
+  parsed_text = text.split("").slice(0, (text.length - 1)).join if SUFFIXES.include?(text.last)
 
   # return english name if in jp else clean input
   if PREFECTURES.value?(parsed_text)
